@@ -12,18 +12,18 @@ Resultado Esperado:
 'p': 112, 'q': 113, 'r': 114, 's': 115
 """
 
-def abecedario_ascii(inicio="a", final="z"):
-    if ord(inicio) < 97 or ord(final) > 122:
+def abecedario_ascii(inicio="a", fin="z"):
+    if ord(inicio) < 97 or ord(fin) > 122:
         print("NO LOCO NO")
         return
     ascii = ord(inicio)
     letra = chr(ascii)
-    while letra != "z":
+    while letra != fin:
         print(f"Letra: {chr(ascii)}, ascii: {ascii}")
         letra = chr(ascii)
         ascii += 1
 
 inicio = "a"
-final = "z"
-abecedario_ascii(inicio, final)
+fin = "z"
+abecedario_ascii(inicio, fin)
 
