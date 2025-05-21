@@ -66,7 +66,7 @@ def batalla_naval():
             fila = input("Ingresa la fila (1-5): ")
             columna = input("Ingresa la columna (A-E): ")
             if not fila.isdigit() or int(fila) < 1 or int(fila) > 5 or columna.upper() not in "ABCDE":
-                print("Coordenadas fuera de rango. Intenta de nuevo.")
+                print("Coordenadas fuera de rango. Intentá de nuevo.")
                 continue
             fila_idx, columna_idx = convertir_coordenadas(fila, columna)
             resultado = atacar(tablero_computadora, fila_idx, columna_idx)
@@ -77,12 +77,12 @@ def batalla_naval():
             else:
                 print("Ya atacaste esa posición.")
         except ValueError:
-            print("Entrada inválida. Intenta de nuevo.")
+            print("Entrada inválida. Intentá de nuevo.")
             continue
 
         # Comprobar si el jugador ganó
         if not quedan_barcos(tablero_computadora):
-            print("¡Felicidades! Hundiste todos los barcos de la computadora.")
+            print("¡Felicitaciones! Hundiste todos los barcos de la computadora.")
             break
 
         # Turno de la computadora
