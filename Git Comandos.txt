@@ -1,0 +1,4 @@
+Git push (para subir los archivos)
+Git pull (para descargar)
+nano (genera un archivo)
+Git init
