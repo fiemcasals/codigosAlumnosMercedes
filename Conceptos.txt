@@ -1,0 +1,1 @@
+Tupla, es como una lista pero es inmutable, es decir que una vez creadas no se pueden modificar
