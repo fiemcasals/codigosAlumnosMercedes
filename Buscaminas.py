@@ -4,11 +4,11 @@ import random
 def crear_tablero():
     return [["_" for _ in range(5)] for _ in range(5)]
 
-# Mostrar el tablero
-def mostrar_tablero(tablero):
+# Mostrar el tablero visible para el jugador
+def mostrar_tablero(tablero_visible):
     columnas = "A B C D E".split()
     print("  " + " ".join(columnas))
-    for idx, fila in enumerate(tablero, start=1):
+    for idx, fila in enumerate(tablero_visible, start=1):
         print(f"{idx:2} " + " ".join(fila))
 
 # Convertir coordenadas de entrada (ej. 1A) a índices
@@ -27,38 +27,50 @@ def colocar_minas(tablero, num_minas):
             tablero[fila][columna] = "*"
             minas_colocadas += 1
 
-# Realizar una busqueda de mina en el tablero (aca tengo que modificar el codigo para que busque minas)
-def busca_mina(tablero, fila, columna):
-    if tablero[fila][columna] == "*":
-        tablero[fila][columna] = "X"
-        return True
-    elif tablero[fila][columna] == "~":
-        tablero[fila][columna] = "O"
-        return False
-    return None
+# Contar minas alrededor de una casilla
+def contar_minas_alrededor(tablero, fila, columna):
+    minas = 0
+    for i in range(fila-1, fila+2):
+        for j in range(columna-1, columna+2):
+            if 0 <= i < 5 and 0 <= j < 5 and not (i == fila and j == columna):
+                if tablero[i][j] == "*":
+                    minas += 1
+    return minas
 
-# Comprobar si quedan minas
-def quedan_minas(tablero):
-    for fila in tablero:
-        if "*" in fila:
-            return True
-    return False
+# Descubrir casilla (y recursivamente si no hay minas alrededor)
+def descubrir(tablero, visible, fila, columna):
+    if visible[fila][columna] != "_":
+        return
+    if tablero[fila][columna] == "*":
+        visible[fila][columna] = "*"
+        return
+    minas = contar_minas_alrededor(tablero, fila, columna)
+    visible[fila][columna] = str(minas)
+    if minas == 0:
+        visible[fila][columna] = " "
+        for i in range(fila-1, fila+2):
+            for j in range(columna-1, columna+2):
+                if 0 <= i < 5 and 0 <= j < 5:
+                    descubrir(tablero, visible, i, j)
+
+# Comprobar si el jugador ha ganado
+def ha_ganado(tablero, visible):
+    for i in range(5):
+        for j in range(5):
+            if tablero[i][j] != "*" and visible[i][j] == "_":
+                return False
+    return True
 
 # Juego principal
-def busca_minasl():
+def buscaminas():
     print("¡Buscaminas!")
-    tablero_jugador = crear_tablero()
-
-    # Colocar barcos (5 barcos para cada jugador)
-    colocar_minas(tablero_jugador, 5)
+    tablero = crear_tablero()
+    visible = crear_tablero()
+    colocar_minas(tablero, 5)
 
     while True:
-        print("\nTu tablero:")
-        mostrar_tablero(tablero_jugador)
-    
-
-        # Turno del jugador
-        print("\nTu turno:")
+        print("\nTablero:")
+        mostrar_tablero(visible)
         try:
             fila = input("Ingresa la fila (1-5): ")
             columna = input("Ingresa la columna (A-E): ")
@@ -66,22 +78,25 @@ def busca_minasl():
                 print("Coordenadas fuera de rango. Intentá de nuevo.")
                 continue
             fila_idx, columna_idx = convertir_coordenadas(fila, columna)
-            resultado = atacar(tablero_computadora, fila_idx, columna_idx)
-            if resultado is True:
-                print("¡Pisaste una mina!")
-            elif resultado is False:
-                print("Agua.")
-            else:
-                print("Ya pisaste esa posición.")
+            if visible[fila_idx][columna_idx] != "_":
+                print("Ya descubriste esa casilla.")
+                continue
+            if tablero[fila_idx][columna_idx] == "*":
+                # Mostrar todas las minas
+                for i in range(5):
+                    for j in range(5):
+                        if tablero[i][j] == "*":
+                            visible[i][j] = "*"
+                mostrar_tablero(visible)
+                print("¡Pisaste una mina! Fin del juego.")
+                break
+            descubrir(tablero, visible, fila_idx, columna_idx)
+            if ha_ganado(tablero, visible):
+                mostrar_tablero(visible)
+                print("¡Felicitaciones! ¡Ganaste!")
+                break
         except ValueError:
             print("Entrada inválida. Intentá de nuevo.")
-            continue
 
-        # Comprobar si el jugador ganó
-        if not quedan_minas(tablero_jugador):
-            print("¡Felicitaciones! ¡Encontraste todas las minas! Fin del juego.")
-            break
-
-# Ejecutar el juego
 if __name__ == "__main__":
-    busca_minas()
+    buscaminas()
