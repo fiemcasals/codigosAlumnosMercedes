@@ -24,7 +24,7 @@
 import random
 
 
-print("Bienvenido a Batalla Naval\n")
+print("Bienvenido a Batalla Naval \n")
 
 respuesta=input("comenzamos con el juego? si/salir: ").lower()
 
@@ -73,7 +73,7 @@ elif respuesta =="si":
     while True:
       if turno == 1:
             
-             print("jugador 1 dispara al lugar que quieras \n")
+             print(f" {nombre_jugador1} dispara al lugar que quieras \n")
              tiro_fil = input("pone el numero: ")
              tiro_col = input ("pone la columna: ").upper()
              if tiro_col not in LETRAS or not(1<= int(tiro_fil) <= 5): 
@@ -104,7 +104,7 @@ elif respuesta =="si":
             
       elif turno == 2:
           
-            print("\n jugador 2 dispara al lugar que quieras\n")
+            print(f"\n {nombre_jugador2} dispara al lugar que quieras\n")
             mostrar_MAPA_enemigo(MAPA_INICIAL_ENEMIGO)
             tiro_fil_enemigo = input("pone el numero: ")
             tiro_col_enemigo = input ("pone la columna: ").upper()
