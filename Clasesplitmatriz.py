@@ -1,29 +1,31 @@
-# Clase para dividir cadenas identificando un separador especifico, estas cadenas se almacenan en una lista que a su vez se van almacenando en una matriz. luego se imprime la matriz resultante.
+# Clase para dividir cadenas identificando un separador especifico, estas cadenas se almacenan en una lista que a su vez, mientras yo siga ingresando cadenas y sepadores, cada cadena ya separada se va almacenando en una matriz. Luego que ya terminé de ingresar las cadenas se imprime la matriz resultante.
 class splitador:
     def __init__(self):
         pass
-
-    def splitter(self, cadena, seprador):
-        split = cadena.split(seprador)
-        return split
-    def ejecutar(self):
-        while True:
-            print("\n--- Split Separador ---")
-            cadena = input("Ingrese la cadena a separar: ")
-            separador = input("Ingrese el separador: ")
-
-            resultado = self.splitter(cadena, separador)
-            print("\n--- Resultado ---")
-            for i, item in enumerate(resultado):
-                print(f"Elemento {i + 1}: {item}")
-            print("\n--- Matriz ---")
-            matriz = [resultado]
-            for fila in matriz:
-                print(fila)
-            continuar = input("\n¿Desea continuar? (s/n): ").strip().lower()
-            if continuar != 's':
-                print("Saliendo del programa.")
-                break
+    def split(self, cadena, separador):
+        # Dividir la cadena usando el separador
+        return cadena.split(separador)
+    def matriz(self, cadenas, separador):
+        # Crear una matriz para almacenar las cadenas divididas
+        matriz = []
+        for cadena in cadenas:
+            # Dividir cada cadena y agregarla a la matriz
+            matriz.append(self.split(cadena, separador))
+        return matriz
+    def imprimir_matriz(self, matriz):
+        # Imprimir la matriz resultante
+        for fila in matriz:
+            print(fila)
+# Ejemplo de uso
 if __name__ == "__main__":
-    splitador = splitador()
-    splitador.ejecutar()
+    splitador_obj = splitador()
+    cadenas = []
+    while True:
+        cadena = input("Ingrese una cadena (o 'salir' para terminar): ")
+        if cadena.lower() == 'salir':
+            break
+        separador = input("Ingrese el separador: ")
+        cadenas.append(cadena)
+    matriz_resultante = splitador_obj.matriz(cadenas, separador)
+    print("Matriz resultante:")
+    splitador_obj.imprimir_matriz(matriz_resultante)
