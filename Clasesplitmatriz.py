@@ -21,10 +21,10 @@ if __name__ == "__main__":
     splitador_obj = splitador()
     cadenas = []
     while True:
-        cadena = input("Ingrese una cadena (o 'salir' para terminar): ")
+        cadena = input("Ingresa una cadena (o 'salir' para terminar y mostrar la matriz resultante): ")
         if cadena.lower() == 'salir':
             break
-        separador = input("Ingrese el separador: ")
+        separador = input("Ingresa el separador: ")
         cadenas.append(cadena)
     matriz_resultante = splitador_obj.matriz(cadenas, separador)
     print("Matriz resultante:")
