@@ -116,8 +116,5 @@ visible = crear_tablero(tamano)
 root.mainloop()
 # Mostrar el tablero inicial
 mostrar_tablero(tablero)
-# Mostrar el tablero visib le inicial
-mostrar_tablero(visible)
-# Mostrar el tablero inicial
-# mostrar_tablero(visible)
 # Mostrar el tablero visible inicial
+mostrar_tablero(visible)
