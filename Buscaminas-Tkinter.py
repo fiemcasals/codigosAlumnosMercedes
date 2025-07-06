@@ -1,120 +1,90 @@
-# Juego de buscaminas en tkinter, donde el usuario puede hacer clic en las casillas para descubrirlas. el usuario elige el tamaño del tablero y la cantidad de vidas
-import tkinter as tk
+# Juego de buscaminas en tkinter, donde el usuario puede hacer clic en las casillas para descubrirlas. con el boton derecho se marca la casilla que coniene una mina y con el izquierdo se descubre la casilla.
 import random
 import tkinter.messagebox as messagebox
+import tkinter as tk
 
-def crear_tablero(tamano):
-    return [["_" for _ in range(tamano)] for _ in range(tamano)]
-def mostrar_tablero(tablero):
-    for fila in tablero:
-        print(" ".join(fila))
-    print()
-def convertir_coordenadas(fila, columna):
-    fila_idx = int(fila) - 1
-    columna_idx = ord(columna.upper()) - ord('A')
-    return fila_idx, columna_idx
-def colocar_minas(tablero, num_minas):
-    minas_colocadas = 0
-    tamano = len(tablero)
-    while minas_colocadas < num_minas:
-        fila = random.randint(0, tamano - 1)
-        columna = random.randint(0, tamano - 1)
-        if tablero[fila][columna] == "_":
-            tablero[fila][columna] = "*"
-            minas_colocadas += 1
-def contar_minas_alrededor(tablero, fila, columna):
-    minas = 0
-    tamano = len(tablero)
-    for i in range(max(0, fila - 1), min(tamano, fila + 2)):
-        for j in range(max(0, columna - 1), min(tamano, columna + 2)):
-            if (i != fila or j != columna) and tablero[i][j] == "*":
-                minas += 1
-    return minas
-def descubrir(tablero, visible, fila, columna):
-    if visible[fila][columna] != "_":
-        return
-    if tablero[fila][columna] == "*":
-        visible[fila][columna] = "*"
-        return
-    minas = contar_minas_alrededor(tablero, fila, columna)
-    visible[fila][columna] = str(minas) if minas > 0 else " "
-    if minas == 0:
-        for i in range(max(0, fila - 1), min(len(tablero), fila + 2)):
-            for j in range(max(0, columna - 1), min(len(tablero), columna + 2)):
-                descubrir(tablero, visible, i, j)
-def ha_ganado(tablero, visible):
-    for i in range(len(tablero)):
-        for j in range(len(tablero)):
-            if tablero[i][j] != "*" and visible[i][j] == "_":
-                return False
-    return True
-def clic_casilla(fila, columna):
-    fila_idx, columna_idx = convertir_coordenadas(fila, columna)
-    if tablero[fila_idx][columna_idx] == "*":
-        visible[fila_idx][columna_idx] = "*"
-        messagebox.showinfo("Fin del juego", "¡Has perdido!")
-        mostrar_tablero(visible)
-    else:
-        descubrir(tablero, visible, fila_idx, columna_idx)
-        if ha_ganado(tablero, visible):
-            messagebox.showinfo("Fin del juego", "¡Has ganado!")
-            mostrar_tablero(visible)
-    actualizar_tablero_gui()
-def actualizar_tablero_gui():
-    for i in range(tamano):
-        for j in range(tamano):
-            if visible[i][j] == "_":
-                botones[i][j].config(text="", state=tk.NORMAL)
-            elif visible[i][j] == "*":
-                botones[i][j].config(text="*", state=tk.DISABLED, bg="red")
-            else:
-                botones[i][j].config(text=visible[i][j], state=tk.DISABLED)
-def iniciar_juego():
-    global tablero, visible, botones, tamano
-    tamano = int(entry_tamano.get())
-    num_minas = int(entry_minas.get())
-    tablero = crear_tablero(tamano)
-    visible = crear_tablero(tamano)
-    colocar_minas(tablero, num_minas)
-    
-    for i in range(tamano):
-        for j in range(tamano):
-            botones[i][j].config(text="_", state=tk.NORMAL, bg="SystemButtonFace")
-    
-    actualizar_tablero_gui()
-# Configuración de la ventana principal
-root = tk.Tk()
-root.title("Buscaminas")
-root.geometry("400x400")
-# Entradas para el tamaño del tablero y número de minas
-label_tamano = tk.Label(root, text="Tamaño del tablero (NxN):")
-label_tamano.pack()
-entry_tamano = tk.Entry(root)
-entry_tamano.pack()
-label_minas = tk.Label(root, text="Número de minas:")
-label_minas.pack()
-entry_minas = tk.Entry(root)
-entry_minas.pack()
-# Botón para iniciar el juego
-button_iniciar = tk.Button(root, text="Iniciar Juego", command=iniciar_juego)
-button_iniciar.pack()
-# Crear botones para el tablero
-tamano = 5  # Tamaño por defecto del tablero
-botones = []
-for i in range(tamano):
-    fila_botones = []
-    for j in range(tamano):
-        boton = tk.Button(root, text="_", width=3, height=1,
-                          command=lambda fila=i+1, columna=chr(j + ord('A')): clic_casilla(fila, columna))
-        boton.grid(row=i, column=j)
-        fila_botones.append(boton)
-    botones.append(fila_botones)
-# Inicializar el tablero y la visibilidad
-tablero = crear_tablero(tamano)
-visible = crear_tablero(tamano)
-# Iniciar el bucle principal de la interfaz gráfica
-root.mainloop()
-# Mostrar el tablero inicial
-mostrar_tablero(tablero)
-# Mostrar el tablero visible inicial
-mostrar_tablero(visible)
+
+class Buscaminas:
+    def __init__(self, root, filas=10, columnas=10, minas=10):
+        self.root = root
+        self.filas = filas
+        self.columnas = columnas
+        self.minas = minas
+        self.tablero = [[0 for _ in range(columnas)] for _ in range(filas)]
+        self.botones = [[None for _ in range(columnas)] for _ in range(filas)]
+        self.minas_colocadas = 0
+        self.juego_terminado = False
+
+        self.crear_tablero()
+        self.colocar_minas()
+        self.calcular_adyacentes()
+
+    def crear_tablero(self):
+        for i in range(self.filas):
+            for j in range(self.columnas):
+                boton = tk.Button(self.root, text='', width=3, command=lambda x=i, y=j: self.descubrir_casilla(x, y))
+                boton.bind('<Button-3>', lambda event, x=i, y=j: self.marcar_casilla(event, x, y))
+                boton.grid(row=i, column=j)
+                self.botones[i][j] = boton
+    def colocar_minas(self):
+        while self.minas_colocadas < self.minas:
+            fila = random.randint(0, self.filas - 1)
+            columna = random.randint(0, self.columnas - 1)
+            if self.tablero[fila][columna] != -1:
+                self.tablero[fila][columna] = -1
+                self.minas_colocadas += 1
+    def calcular_adyacentes(self):
+        for i in range(self.filas):
+            for j in range(self.columnas):
+                if self.tablero[i][j] == -1:
+                    continue
+                contador = 0
+                for x in range(max(0, i - 1), min(self.filas, i + 2)):
+                    for y in range(max(0, j - 1), min(self.columnas, j + 2)):
+                        if self.tablero[x][y] == -1:
+                            contador += 1
+                self.tablero[i][j] = contador
+    def descubrir_casilla(self, fila, columna):
+        if self.juego_terminado:
+            return
+        if self.tablero[fila][columna] == -1:
+            messagebox.showinfo("Fin del juego", "¡Has perdido!")
+            self.juego_terminado = True
+            self.revelar_minas()
+        else:
+            self.revelar_casilla(fila, columna)
+    def revelar_casilla(self, fila, columna):
+        if self.botones[fila][columna]['state'] == 'disabled':
+            return
+        self.botones[fila][columna]['text'] = str(self.tablero[fila][columna])
+        self.botones[fila][columna]['state'] = 'disabled'
+        if self.tablero[fila][columna] == 0:
+            for x in range(max(0, fila - 1), min(self.filas, fila + 2)):
+                for y in range(max(0, columna - 1), min(self.columnas, columna + 2)):
+                    if (x != fila or y != columna) and self.botones[x][y]['state'] != 'disabled':
+                        self.revelar_casilla(x, y)
+    def marcar_casilla(self, event, fila, columna):
+        if self.juego_terminado:
+            return
+        boton = self.botones[fila][columna]
+        if boton['text'] == '':
+            boton['text'] = '*'
+            boton['state'] = 'disabled'
+        elif boton['text'] == '*':
+            boton['text'] = ''
+            boton['state'] = 'normal'
+    def revelar_minas(self):
+        for i in range(self.filas):
+            for j in range(self.columnas):
+                if self.tablero[i][j] == -1:
+                    self.botones[i][j]['text'] = '*'
+                    self.botones[i][j]['state'] = 'disabled'
+                else:
+                    self.botones[i][j]['state'] = 'disabled'
+def main():
+    root = tk.Tk()
+    root.title("Buscaminas")
+    buscaminas = Buscaminas(root, filas=10, columnas=10, minas=10)
+    root.mainloop()
+if __name__ == "__main__":
+    main()
