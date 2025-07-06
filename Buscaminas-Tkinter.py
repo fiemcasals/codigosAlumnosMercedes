@@ -27,7 +27,12 @@ class Buscaminas:
     def crear_tablero(self):
         for i in range(self.filas):
             for j in range(self.columnas):
-                boton = tk.Button(self.root, text='')  # Sin width ni height
+                boton = tk.Button(
+                    self.root,
+                    text='',
+                    borderwidth=1,  # Opcional: para que se vea más prolijo
+                    relief='raised'
+                )
                 boton.config(command=lambda x=i, y=j: self.descubrir_casilla(x, y))
                 boton.bind('<Button-3>', lambda event, x=i, y=j: self.marcar_casilla(event, x, y))
                 boton.grid(row=i, column=j)
