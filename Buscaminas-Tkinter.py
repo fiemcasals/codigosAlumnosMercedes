@@ -48,7 +48,7 @@ class Buscaminas:
         if self.juego_terminado:
             return
         if self.tablero[fila][columna] == -1:
-            messagebox.showinfo("Fin del juego", "¡Has perdido!")
+            messagebox.showinfo("Fin del juego", "¡Perdiste!")
             self.juego_terminado = True
             self.revelar_minas()
         else:
@@ -56,7 +56,10 @@ class Buscaminas:
     def revelar_casilla(self, fila, columna):
         if self.botones[fila][columna]['state'] == 'disabled':
             return
-        self.botones[fila][columna]['text'] = str(self.tablero[fila][columna])
+        if self.tablero[fila][columna] == 0:
+            self.botones[fila][columna]['text'] = ''
+        else:
+            self.botones[fila][columna]['text'] = str(self.tablero[fila][columna])
         self.botones[fila][columna]['state'] = 'disabled'
         if self.tablero[fila][columna] == 0:
             for x in range(max(0, fila - 1), min(self.filas, fila + 2)):
@@ -68,19 +71,28 @@ class Buscaminas:
             return
         boton = self.botones[fila][columna]
         if boton['text'] == '':
-            boton['text'] = '*'
+            boton['text'] = '🚩'
             boton['state'] = 'disabled'
-        elif boton['text'] == '*':
+            boton['bg'] = 'yellow'   # Fondo amarillo para la bandera
+            boton['fg'] = 'red'      # Texto rojo para la bandera
+        elif boton['text'] == '🚩':
             boton['text'] = ''
             boton['state'] = 'normal'
+            boton['bg'] = 'SystemButtonFace'
+            boton['fg'] = 'black'
+
     def revelar_minas(self):
         for i in range(self.filas):
             for j in range(self.columnas):
                 if self.tablero[i][j] == -1:
-                    self.botones[i][j]['text'] = '*'
+                    self.botones[i][j]['text'] = '💣'
                     self.botones[i][j]['state'] = 'disabled'
+                    self.botones[i][j]['bg'] = 'red'     # Fondo rojo para la bomba
+                    self.botones[i][j]['fg'] = 'black'
                 else:
                     self.botones[i][j]['state'] = 'disabled'
+                    self.botones[i][j]['bg'] = 'SystemButtonFace'
+                    self.botones[i][j]['fg'] = 'black'
 def main():
     root = tk.Tk()
     root.title("Buscaminas")
