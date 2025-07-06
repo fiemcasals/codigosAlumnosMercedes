@@ -19,6 +19,7 @@ class Buscaminas:
         self.img_bandera = PhotoImage(file="Bandera.png")
         self.img_explosion = PhotoImage(file="Explosion.png")
         self.img_mina = PhotoImage(file="Mina.png")
+        self.img_casilla = PhotoImage(file="casilla_blanco.png")  # Nueva imagen para casilla vacía
 
         self.crear_tablero()
         self.colocar_minas()
@@ -30,7 +31,8 @@ class Buscaminas:
                 boton = tk.Button(
                     self.root,
                     text='',
-                    borderwidth=1,  # Opcional: para que se vea más prolijo
+                    image=self.img_casilla,  # Usar imagen de casilla vacía
+                    borderwidth=1,
                     relief='raised'
                 )
                 boton.config(command=lambda x=i, y=j: self.descubrir_casilla(x, y))
@@ -78,7 +80,7 @@ class Buscaminas:
         if self.botones[fila][columna]['state'] == 'disabled':
             return
         if self.tablero[fila][columna] == 0:
-            self.botones[fila][columna].config(text='', image='')
+            self.botones[fila][columna].config(text='', image='')  # Casilla vacía descubierta
         else:
             self.botones[fila][columna].config(text=str(self.tablero[fila][columna]), image='')
         self.botones[fila][columna]['state'] = 'disabled'
