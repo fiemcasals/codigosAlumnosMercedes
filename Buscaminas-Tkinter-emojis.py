@@ -18,8 +18,7 @@ class Buscaminas:
         self.emoji_bandera = "🚩"
         self.emoji_explosion = "💥"
         self.emoji_mina = "💣"
-        self.emoji_casilla_vacia = "⬜️"
-
+        self.emoji_casilla_vacia = " "
         self.crear_tablero()
         self.colocar_minas()
         self.calcular_adyacentes()
