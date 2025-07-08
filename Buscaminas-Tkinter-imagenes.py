@@ -16,10 +16,13 @@ class Buscaminas:
         self.juego_terminado = False
 
         # Cargar imágenes
-        self.img_bandera = PhotoImage(file="Bandera.png")
+        self.img_bandera = PhotoImage(file="Casilla_banderin.png")
         self.img_explosion = PhotoImage(file="Explosion.png")
-        self.img_mina = PhotoImage(file="Mina.png")
-        self.img_casilla = PhotoImage(file="casilla_blanco.png")  # Nueva imagen para casilla vacía
+        self.img_mina = PhotoImage(file="Casilla_mina.png")
+        self.img_sin_descubrir = PhotoImage(file="Casilla_sin_descubrir.png")
+        self.img_descubierta = PhotoImage(file="Casilla_descubierta.png")
+        self.img_numeros = [None] + [PhotoImage(file=f"Casilla_{i}.png") for i in range(1,9)]
+        # img_numeros[1] = Casilla_1.png, ..., img_numeros[8] = Casilla_8.png
 
         self.crear_tablero()
         self.colocar_minas()
@@ -30,10 +33,11 @@ class Buscaminas:
             for j in range(self.columnas):
                 boton = tk.Button(
                     self.root,
-                    text='',
-                    image=self.img_casilla,  # Usar imagen de casilla vacía
+                    image=self.img_sin_descubrir,  # Imagen de casilla sin descubrir
                     borderwidth=1,
-                    relief='raised'
+                    relief='raised',
+                    width=32,  # Ajusta el tamaño según tus imágenes
+                    height=32
                 )
                 boton.config(command=lambda x=i, y=j: self.descubrir_casilla(x, y))
                 boton.bind('<Button-3>', lambda event, x=i, y=j: self.marcar_casilla(event, x, y))
@@ -44,32 +48,24 @@ class Buscaminas:
         if self.juego_terminado:
             return
         boton = self.botones[fila][columna]
-        if boton['text'] == '' and not boton['image']:
-            boton.config(image=self.img_bandera, text='')
-            boton['state'] = 'disabled'
-            boton['bg'] = 'yellow'
-        elif boton['image']:
-            boton.config(image='', text='')
-            boton['state'] = 'normal'
-            boton['bg'] = 'SystemButtonFace'
+        if boton['state'] == 'normal' and boton['image'] == str(self.img_sin_descubrir):
+            boton.config(image=self.img_bandera)
+        elif boton['image'] == str(self.img_bandera):
+            boton.config(image=self.img_sin_descubrir)
 
     def revelar_minas(self):
         for i in range(self.filas):
             for j in range(self.columnas):
                 boton = self.botones[i][j]
                 if self.tablero[i][j] == -1:
-                    boton.config(image=self.img_mina, text='')
-                    boton['state'] = 'disabled'
-                    boton['bg'] = 'red'
-                else:
-                    boton['state'] = 'disabled'
-                    boton['bg'] = 'SystemButtonFace'
+                    boton.config(image=self.img_mina)
+                boton['state'] = 'disabled'
 
     def descubrir_casilla(self, fila, columna):
         if self.juego_terminado:
             return
         if self.tablero[fila][columna] == -1:
-            self.botones[fila][columna].config(image=self.img_explosion, text='')
+            self.botones[fila][columna].config(image=self.img_explosion)
             messagebox.showinfo("Fin del juego", "¡Perdiste!")
             self.juego_terminado = True
             self.revelar_minas()
@@ -79,12 +75,13 @@ class Buscaminas:
     def revelar_casilla(self, fila, columna):
         if self.botones[fila][columna]['state'] == 'disabled':
             return
-        if self.tablero[fila][columna] == 0:
-            self.botones[fila][columna].config(text='', image='')  # Casilla vacía descubierta
+        valor = self.tablero[fila][columna]
+        if valor == 0:
+            self.botones[fila][columna].config(image=self.img_descubierta)
         else:
-            self.botones[fila][columna].config(text=str(self.tablero[fila][columna]), image='')
+            self.botones[fila][columna].config(image=self.img_numeros[valor])
         self.botones[fila][columna]['state'] = 'disabled'
-        if self.tablero[fila][columna] == 0:
+        if valor == 0:
             for x in range(max(0, fila - 1), min(self.filas, fila + 2)):
                 for y in range(max(0, columna - 1), min(self.columnas, columna + 2)):
                     if (x != fila or y != columna) and self.botones[x][y]['state'] != 'disabled':
