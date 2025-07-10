@@ -1,0 +1,4 @@
+Jugador,Partidas Ganadas
+Jugador,4
+Máquina,6
+Empates,2
