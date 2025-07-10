@@ -45,6 +45,37 @@ class Calculadora:
             if seguir != "s":
                 break
 
-if __name__ == "__main__":
+def main():
     calc = Calculadora()
-    calc.ejecutar()
+    while True:
+        print("\n--- Calculadora ---")
+        print("1. Sumar")
+        print("2. Restar")
+        print("3. Multiplicar")
+        print("4. Dividir")
+        print("5. Salir")
+        opcion = input("Elija una opción (1-5): ")
+        if opcion == "5":
+            print("¡Hasta luego!")
+            break
+        if opcion not in ("1", "2", "3", "4"):
+            print("Opción no válida. Intente de nuevo.")
+            continue
+        try:
+            a = float(input("Ingrese el primer número: "))
+            b = float(input("Ingrese el segundo número: "))
+        except ValueError:
+            print("Por favor, ingrese números válidos.")
+            continue
+        if opcion == "1":
+            resultado = calc.sumar(a, b)
+        elif opcion == "2":
+            resultado = calc.restar(a, b)
+        elif opcion == "3":
+            resultado = calc.multiplicar(a, b)
+        elif opcion == "4":
+            resultado = calc.dividir(a, b)
+        print(f"El resultado es: {resultado}")
+
+if __name__ == "__main__":
+    main()
