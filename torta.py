@@ -6,7 +6,7 @@ nombres = []  # Lista para las etiquetas (categorías)
 valores = []  # Lista para los valores numéricos asociados
 
 # Abrimos el archivo de texto que contiene los datos
-with open('/home/mauri/uni/UTN/temasDadosClasesUTN/practicasUTN/mercedes/ejercicios/torta/datos.txt', 'r') as archivo:
+with open('C:/Users/ChicoGastonH/Documents/GitHub/codigosAlumnosMercedes/datos.txt', 'r') as archivo:
     lector = csv.reader(archivo)  # Creamos un lector CSV
     next(lector)  # Saltamos la primera línea (encabezado)
     for fila in lector:

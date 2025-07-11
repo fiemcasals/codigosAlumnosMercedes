@@ -1,4 +1,5 @@
 Jugador,Partidas Ganadas
 Jugador,4
-Máquina,6
+Maquina,6
 Empates,2
+Jugador2,8
