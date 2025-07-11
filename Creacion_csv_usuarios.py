@@ -8,7 +8,7 @@ class AppAlumnos:
     def __init__(self, master):
         self.master = master
         master.title("Carga de alumnos")
-        master.geometry("350x220")
+        master.geometry("350x250")
 
         tk.Label(master, text="Nombre:").pack(pady=(10,0))
         self.entry_nombre = tk.Entry(master)
