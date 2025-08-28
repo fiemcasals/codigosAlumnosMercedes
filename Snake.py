@@ -75,6 +75,23 @@ class SnakeGame:
         else:
             self.canvas.create_text(self.width//2, self.height//2, text='¡Perdiste!', fill='white', font=('Arial', 24))
             self.canvas.create_text(self.width//2, self.height//2+30, text=f'Puntaje: {self.score}', fill='white', font=('Arial', 16))
+            self.root.after(500, self.ask_restart)
+
+    def ask_restart(self):
+        import tkinter.messagebox
+        respuesta = tkinter.messagebox.askyesno('Juego terminado', '¿Quieres volver a jugar?')
+        if respuesta:
+            self.restart_game()
+        else:
+            self.root.destroy()
+
+    def restart_game(self):
+        self.direction = 'Right'
+        self.running = True
+        self.score = 0
+        self.snake = [(self.width//2, self.height//2)]
+        self.food = self.place_food()
+        self.update()
 
 def main():
     root = tk.Tk()
