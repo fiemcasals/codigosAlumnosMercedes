@@ -1,0 +1,96 @@
+{% load static %}
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <title>Simulador de financiación</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="{% static 'simulador/css/estilos.css' %}">
+  <style>
+    body{font-family:system-ui,Segoe UI,Roboto,Ubuntu,Arial,sans-serif;margin:0;background:#0b1020;color:#e6edf3}
+    .container{max-width:720px;margin:0 auto;padding:2rem}
+    .card{background:#141b2d;border-radius:14px;box-shadow:0 8px 24px rgba(0,0,0,.25);padding:1.25rem}
+    label{display:block;margin:.6rem 0 .25rem;color:#9fb1c1}
+    input, select{width:100%;padding:.6rem .8rem;border-radius:10px;border:1px solid #2b3553;background:#0f1629;color:#e6edf3}
+    button{margin-top:1rem;padding:.7rem 1rem;border:0;border-radius:12px;background:#5aa9ff;color:#0b1020;font-weight:700;cursor:pointer}
+    .errores{background:#3b1f2b;border-left:4px solid #ff5a7a;padding:.8rem 1rem;border-radius:8px;margin-bottom:1rem}
+    .ok{background:#0f2a1f;border-left:4px solid #24d18d;padding:.8rem 1rem;border-radius:8px;margin-top:1rem}
+    .grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+    .field{margin-bottom:.6rem}
+    .helptext, .errorlist{font-size:.9rem}
+    .errorlist{color:#ff8fa1;margin:.25rem 0 0 0;padding-left:1.1rem}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Simulador de financiación</h1>
+    <div class="card">
+
+      {% if errores %}
+        <div class="errores">
+          <strong>Revisá estos puntos:</strong>
+          {{ errores }}
+        </div>
+      {% endif %}
+
+      <form method="post" novalidate>
+        {% csrf_token %}
+
+        <div class="grid">
+          <div class="field">
+            <label for="{{ form.monto_disponible.id_for_label }}">Monto disponible</label>
+            {{ form.monto_disponible }}
+            {{ form.monto_disponible.errors }}
+          </div>
+
+          <div class="field">
+            <label for="{{ form.monto_financiar.id_for_label }}">Monto a financiar</label>
+            {{ form.monto_financiar }}
+            {{ form.monto_financiar.errors }}
+          </div>
+
+          <div class="field">
+            <label for="{{ form.cuotas.id_for_label }}">Cantidad de cuotas</label>
+            {{ form.cuotas }}
+            {{ form.cuotas.errors }}
+          </div>
+
+          <div class="field">
+            <label for="{{ form.interes_anual.id_for_label }}">Interés anual (%)</label>
+            {{ form.interes_anual }}
+            {{ form.interes_anual.errors }}
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="{{ form.sistema.id_for_label }}">Sistema</label>
+          {{ form.sistema }}
+          {{ form.sistema.errors }}
+        </div>
+
+        <button type="submit">Calcular y guardar</button>
+      </form>
+
+      {% if resultado %}
+        <div class="ok">
+          <h3>Resultado</h3>
+          {% if guardado %}
+            <p><strong>Guardado:</strong> Simulación ID #{{ guardado }}</p>
+          {% endif %}
+          <ul>
+            <li>Monto disponible: $ {{ resultado.monto_disponible }}</li>
+            <li>Monto a financiar: $ {{ resultado.monto_financiar }}</li>
+            <li>Cuotas: {{ resultado.cuotas }}</li>
+            <li>Interés anual: {{ resultado.interes_anual }} %</li>
+            <li>Sistema: {{ resultado.sistema }}</li>
+            <li>Tasa mensual (nominal): {{ resultado.tasa_mensual }}</li>
+            <li><strong>Cuota mensual: $ {{ resultado.cuota_mensual }}</strong></li>
+            <li>Total intereses: $ {{ resultado.total_intereses }}</li>
+            <li>Total a pagar: $ {{ resultado.total_a_pagar }}</li>
+          </ul>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+</body>
+</html>

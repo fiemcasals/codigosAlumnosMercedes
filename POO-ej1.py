@@ -6,7 +6,7 @@ class Biologicos:
         self.peso = peso
 
     @property
-    def peso(self) -> float:
+    def peso(self) -> str:
         return f"{self._peso:.1f}kg"
 
     @peso.setter
